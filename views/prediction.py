@@ -33,8 +33,7 @@ def show_page():
     
     with left:
         with st.container(border=True):
-            st.caption("Demographic")
-            st.html("<hr style='margin: 2px 0px; border: none; border-top: 1px solid #31333F;'>")
+            st.header("Demographic", divider="gray")
             year_birth = st.slider("Birth Year", 1940, 1999, 1975)
             income = st.slider("Annual Income $", 2, 52, 120, format="%dk")
             income = income * 1000
@@ -48,8 +47,7 @@ def show_page():
                 kidhome       = st.number_input("Kids at Home", 0, 3, 0)
             with col2:
                 teenhome      = st.number_input("Teens at Home", 0, 3, 0)
-            st.caption("Engagement")
-            st.html("<hr style='margin: 2px 0px; border: none; border-top: 1px solid #31333F;'>")
+            st.header("Engagement", divider="gray")
             col1, col2 = st.columns(2)
             with col1:    
                 visit_choice       = st.segmented_control("Web Visits / Month", options=std_categories, default="Low")
@@ -63,8 +61,7 @@ def show_page():
             num_cat_purch   = val_map["cat"].get(cat_purch_choice, 4)
             num_store_purch = val_map["store"].get(store_purch_choice, 7)
             num_deals_purch = val_map["deals"].get(deal_purch_choice, 2)
-            st.caption("Spending (Last 2 Years, $)")
-            st.html("<hr style='margin: 2px 0px; border: none; border-top: 1px solid #31333F;'>")
+            st.header("Spending (Last 2 Years, $)", divider="gray")
             col1, col2 = st.columns(2)
             with col1:
                 wines  = st.slider("Wines",  0, 1493, 174)
@@ -80,7 +77,7 @@ def show_page():
     
     with right:
         with st.container(border=True):
-            st.caption("Recency & Past Campaigns")
+            st.header("Recency & Past Campaigns", divider="gray")
             st.html("<hr style='margin: 2px 0px; border: none; border-top: 1px solid #31333F;'>")
             recency = st.slider("Days since last purchase", 0, 99, 49)
             col1, col2 = st.columns(2)
@@ -125,8 +122,7 @@ def show_page():
                 'AcceptedCmp4': accepted_cmp4,
                 'AcceptedCmp5': accepted_cmp5
             }
-            st.caption("Response Probability")
-            st.html("<hr style='margin: 2px 0px; border: none; border-top: 1px solid #31333F;'>")
+            st.header("Response Probability", divider="gray")
             prob, impact_list = predicts_probs(
                 entry, model, scaler, encoder, feature_cols, cap_bounds, artifacts
             )

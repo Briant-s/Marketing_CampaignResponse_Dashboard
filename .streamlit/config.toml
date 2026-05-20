@@ -1,0 +1,13 @@
+[theme]
+primaryColor="#7F77DD"
+backgroundColor="#FAF9FD"
+secondaryBackgroundColor = "#FFFFFF"
+textColor="#2C2C2A"
+showSidebarBorder = true
+font="sans serif"
+
+[theme.sidebar]
+primaryColor="#7F77DD"
+backgroundColor="#FFFFFF"
+textColor="#2C2C2A"
+secondaryBackgroundColor = "#7F77DD"
