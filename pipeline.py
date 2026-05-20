@@ -15,9 +15,10 @@ def load_objects():
 
 def predicts_probs(entry, model, scaler, encoder, features, capped_bounds, artifacts):
     df = pd.DataFrame([entry])
-    
+    df.head()
     # Feature Engineering
     df['Age'] = 2014 - df['Year_Birth']
+    df.drop(columns="Year_Birth")
     df['Total_Children'] = df['Kidhome'] + df['Teenhome']
     df['Total_Spent'] = (df['MntWines'] + df['MntFruits'] + df['MntMeatProducts'] +
                         df['MntFishProducts'] + df['MntSweetProducts'] + df['MntGoldProds'])
@@ -32,15 +33,14 @@ def predicts_probs(entry, model, scaler, encoder, features, capped_bounds, artif
         columns=encoder.get_feature_names_out(['Marital_Status', 'Country'])
     )
     df = df.drop(columns=['Marital_Status', 'Country']).join(ohe)
+    expected_features = scaler.feature_names_in_
     
     # Column Alignment
-    df = df.reindex(columns=features, fill_value=0)
+    df = df.reindex(columns=expected_features, fill_value=0)
     
     # Scale & Predict
     scaled = scaler.transform(df)
     prob = model.predict_proba(scaled)[:, 1][0]
-    
-    
     
     # Feature Importance
     coefs = model.coef_[0]
@@ -49,7 +49,7 @@ def predicts_probs(entry, model, scaler, encoder, features, capped_bounds, artif
     
     # Build the list of dictionaries
     impact_list = []
-    for name, impact in zip(features, impacts):
+    for name, impact in zip(expected_features, impacts):
         impact_list.append({
             "feature": name,
             "impact_value": float(impact), 
