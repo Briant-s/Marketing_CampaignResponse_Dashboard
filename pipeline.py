@@ -39,6 +39,24 @@ def predicts_probs(entry, model, scaler, encoder, features, capped_bounds, artif
     # Scale & Predict
     scaled = scaler.transform(df)
     prob = model.predict_proba(scaled)[:, 1][0]
-    return round(prob, 4)
+    
+    
+    
+    # Feature Importance
+    coefs = model.coef_[0]
+    scaled_inputs = scaled[0] 
+    impacts = coefs * scaled_inputs
+    
+    # Build the list of dictionaries
+    impact_list = []
+    for name, impact in zip(features, impacts):
+        impact_list.append({
+            "feature": name,
+            "impact_value": float(impact), 
+            "absolute_magnitude": abs(float(impact))
+        })
+    impact_list.sort(key=lambda x: x["absolute_magnitude"], reverse=True)
+    
+    return round(prob, 4), impact_list
 
     
