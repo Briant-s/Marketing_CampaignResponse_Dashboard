@@ -2,6 +2,7 @@ import streamlit as st
 from pipeline import load_objects, predicts_probs
 import plotly.graph_objects as go
 import pandas as pd
+from functions.loader import load_objects
 
 education_options = ["Basic", "Bachelor", "Master", "PhD"]
 marital_options = ["Single", "Married", "Divorced", "Together", "Widow"]
@@ -17,11 +18,8 @@ val_map = {
 def show_page():
     st.set_page_config(page_title='Campaign Response Predictor', layout='wide')
 
-    @st.cache_resource
-    def load():
-        return load_objects()
 
-    model, scaler, encoder, cap_bounds, feature_cols, artifacts = load()
+    model, scaler, encoder, cap_bounds, feature_cols, artifacts = load_objects()
 
     st.title("Campaign Response Predictor")
     st.markdown(
@@ -31,7 +29,7 @@ def show_page():
     
     left, right = st.columns(2)
     
-    with left:
+    with right:
         with st.container(border=True):
             st.header("Demographic", divider="gray")
             year_birth = st.slider("Birth Year", 1940, 1999, 1975)
@@ -75,7 +73,7 @@ def show_page():
 
         
     
-    with right:
+    with left:
         with st.container(border=True):
             st.header("Recency & Past Campaigns", divider="gray")
             st.html("<hr style='margin: 2px 0px; border: none; border-top: 1px solid #31333F;'>")
@@ -131,15 +129,15 @@ def show_page():
             if prob < 33:
                 status_icon = "✕"
                 status_text = "Unlikely to respond"
-                status_color = "#ff4b4b" # Streamlit Red
+                status_color = "#d85a30" 
             elif prob < 66:
                 status_icon = "−"
                 status_text = "Potential to respond"
-                status_color = "#faca2b" # Streamlit Yellow
+                status_color = "#F5A623" 
             else:
                 status_icon = "✓"
                 status_text = "Likely to respond"
-                status_color = "#00d26a" # Streamlit Green
+                status_color = "#00d26a" 
 
             # 2. Build the Plotly Gauge Chart
             fig = go.Figure(go.Indicator(
@@ -147,7 +145,7 @@ def show_page():
                 value = prob,
                 number = {
                     'suffix': "%", 
-                    'font': {'size': 48, 'color': '#4A90E2'} # Bright Blue number
+                    'font': {'size': 48, 'color': '#1e9e76'} 
                 },
                 title = {
                     'text': "probability", 
@@ -155,8 +153,8 @@ def show_page():
                 },
                 gauge = {
                     'axis': {'range': [0, 100], 'showticklabels': False, 'ticks': ''},
-                    'bar': {'color': "#4A90E2", 'thickness': 0.2}, # The blue progress bar
-                    'bgcolor': "#2A2D3D", # The dark track behind the bar
+                    'bar': {'color': "#1e9e76", 'thickness': 0.4}, # The blue progress bar
+                    'bgcolor': "#fff1d0", # The dark track behind the bar
                     'shape': "angular",
                 }
             ))
@@ -171,8 +169,26 @@ def show_page():
 
             # Render the chart
             st.plotly_chart(fig, width="stretch")
-            st.space(size="large")
-            # 4. Render the dynamic text below the chart using HTML for exact centering and color
+            st.markdown(f"""
+                <div style="text-align: center; margin-top: -10px; margin-bottom: 16px;">
+                    <span style="
+                        font-size: 15px;
+                        font-weight: 500;
+                        color: {status_color};
+                        background-color: {status_color}22;
+                        padding: 6px 16px;
+                        border-radius: 20px;
+                        border: 1px solid {status_color}55;
+                    ">
+                        {status_icon} &nbsp; {status_text}
+                    </span>
+                </div>
+            """, unsafe_allow_html=True)
+            st.space(size="small")
+            
+            
+            
+            
             # 1. Find the maximum absolute magnitude to scale the bars (0 to 100%)
             # Check if list is not empty to avoid division by zero errors
             if impact_list:
@@ -197,7 +213,7 @@ def show_page():
                     color = "#00d26a" # Streamlit Green
                     icon = "+"
                 else:
-                    color = "#ff4b4b" # Streamlit Red
+                    color = "#e24b4a" # Streamlit Red
                     icon = "−"
                     
                 # Create the flex container for each row
@@ -205,7 +221,7 @@ def show_page():
                 <div style="display: flex; align-items: center; margin-bottom: 12px; font-family: monospace;">
                     <div style="width: 20px; color: {color}; font-weight: bold; font-size: 16px;">{icon}</div>
                     <div style="width: 130px; color: #a0aab5; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{feat_name}</div>
-                    <div style="flex-grow: 1; background-color: #2A2D3D; border-radius: 10px; height: 10px; margin-left: 10px;">
+                    <div style="flex-grow: 1; background-color: #888780; border-radius: 10px; height: 10px; margin-left: 10px;">
                         <div style="width: {width_pct}%; background-color: {color}; height: 100%; border-radius: 10px;"></div>
                     </div>
                 </div>
